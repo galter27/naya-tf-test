@@ -15,6 +15,22 @@ module "bastion_sg" {
       cidr_blocks = "0.0.0.0/0"
     }
   ]
+
+    egress_with_cidr_blocks = [
+  {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = "0.0.0.0/0"
+  },
+  {
+    from_port   = -1      # ICMP type (any)
+    to_port     = -1      # ICMP code (any)
+    protocol    = "icmp"  # Specify ICMP protocol
+    cidr_blocks = "0.0.0.0/0"
+  }
+]
+
 }
 
 module "private_sg" {
@@ -60,15 +76,6 @@ module "database_sg" {
       protocol    = "tcp"
       description = "Allow PostgreSQL access from private EC2 instances"
       source_security_group_id = module.private_sg.security_group_id
-    }
-  ]
-
-  egress_with_cidr_blocks = [
-    {
-      from_port   = 0
-      to_port     = 65535
-      protocol    = "tcp"
-      cidr_blocks = "10.0.0.0/16"  # Allow outbound traffic only within the VPC
     }
   ]
 }

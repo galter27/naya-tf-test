@@ -44,25 +44,34 @@ module "postgres_client_ec2" {
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
   version = "7.16.0"
-  depends_on = [ module.naya-rds ]
+  depends_on = [module.naya-rds]
 
   function_name = "rds-lambda"
   description   = "Save data in postgres"
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.11"
-  
+
+  # Lambda VPC and Security Groups
+  vpc_subnet_ids         = module.naya_vpc.private_subnets
+  vpc_security_group_ids = [module.private_sg.security_group_id]
+
+  # Lambda environment variables (database connection details)
+  environment_variables = {
+    DB_HOST     = "naya-rds.cns4gguas8r0.il-central-1.rds.amazonaws.com"
+    DB_NAME     = "postgres"
+    DB_USER     = "postgres"
+    DB_PASSWORD = "password"
+    DB_PORT     = "5432"
+  }
+
   create_package         = false
   local_existing_package = "./lambda.zip"
 
-  vpc_subnet_ids         = module.private_sg.subnet_id
+  # IAM Role Setup
+  create_role = true
+  role_name   = "lambda-vpc-role"
 
-  environment_variables = {
-    DB_HOST   = "naya-rds.cns4gguas8r0.il-central-1.rds.amazonaws.com"
-    DB_USER   = "postgres"
-    DB_NAME   = "postgres"
-    DB_PASSWORD = "password" 
-    PORT = 5432
-  }
+  attach_network_policy = true
 
   tags = {
     Name = "rds-lambda"

@@ -67,10 +67,6 @@ module "lambda_function" {
   create_package         = false
   local_existing_package = "./lambda.zip"
 
-  # IAM Role Setup
-  create_role = true
-  role_name   = "lambda-vpc-role"
-
   attach_network_policy = true
 
   tags = {

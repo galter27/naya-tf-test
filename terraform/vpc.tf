@@ -17,6 +17,20 @@ module "vpc" {
   create_database_nat_gateway_route      = false 
   create_database_internet_gateway_route = false
 
+  # Set the route table names using tags
+  private_route_table_tags = {
+    Name = "${var.vpc_name}-private-route"
+  }
+
+  public_route_table_tags = {
+    Name = "${var.vpc_name}-public-route"
+  }
+
+  database_route_table_tags = {
+    Name = "${var.vpc_name}-database-route"
+  }
+
+
   tags = merge(
   local.tags,
   {

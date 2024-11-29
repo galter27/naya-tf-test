@@ -2,9 +2,9 @@ module "bastion_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name        = "bastion-sg"
+  name        = var.bastion_sg_name
   description = "Security group for bastion host"
-  vpc_id      = module.naya_vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [
     {
@@ -30,6 +30,13 @@ module "bastion_sg" {
     cidr_blocks = "0.0.0.0/0"
   }
 ]
+  
+  tags = merge(
+  local.tags,
+  {
+    Name = var.bastion_sg_name
+  }
+  )
 
 }
 
@@ -37,9 +44,9 @@ module "private_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name        = "private-sg"
+  name        = var.private_sg_name
   description = "Security group for private resources"
-  vpc_id      = module.naya_vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_with_source_security_group_id = [
     {   
@@ -59,15 +66,22 @@ module "private_sg" {
       cidr_blocks = "10.0.0.0/16" # Allow outbound traffic only within the VPC
     }
   ]
+
+  tags = merge(
+  local.tags,
+  {
+    Name = var.private_sg_name
+  }
+  )
 }
 
 module "database_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.2.0"
 
-  name        = "database-sg"
+  name        = var.database_sg_name
   description = "Security group for database with postgres port open within VPC"
-  vpc_id      = module.naya_vpc.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress_with_source_security_group_id = [
     {
@@ -78,4 +92,11 @@ module "database_sg" {
       source_security_group_id = module.private_sg.security_group_id
     }
   ]
+
+  tags = merge(
+  local.tags,
+  {
+    Name = var.database_sg_name
+  }
+  )
 }

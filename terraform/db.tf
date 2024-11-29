@@ -1,4 +1,4 @@
-module "naya-rds" {
+module "rds_postgres" {
   source = "terraform-aws-modules/rds/aws"
 
   identifier = "naya-rds"
@@ -17,12 +17,15 @@ module "naya-rds" {
   manage_master_user_password = false
 
   multi_az               = false
-  db_subnet_group_name   = module.naya_vpc.database_subnet_group
+  db_subnet_group_name   = module.vpc.database_subnet_group
   vpc_security_group_ids = [module.database_sg.security_group_id]
 
-  tags = {
-    Environment = "dev"
-  }
+  tags = merge(
+    local.tags,
+    {
+      Name = "PostgreSQL"
+    }
+    )
 
   # Database Deletion Protection
   deletion_protection = false

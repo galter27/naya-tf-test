@@ -1,23 +1,51 @@
-module "naya_vpc" {
+module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.16.0"
 
-  name = "naya-vpc" 
-  azs             = ["il-central-1a", "il-central-1b", "il-central-1c"] 
-  cidr                 = "10.0.0.0/16"
+  name                 = var.vpc_name
+  azs                  = local.azs
+  cidr                 = var.vpc_cidr
+  
+  public_subnets       = local.public_subnets
+  private_subnets      = local.private_subnets
+  database_subnets     = local.database_subnets
 
-  # Subnet for bastion
-  public_subnets  = ["10.0.1.0/24"] 
-  create_igw      = true 
+  create_igw           = var.create_igw
+  enable_nat_gateway   = var.enable_nat_gateway
   
-  # Subnet for ec2 instances
-  private_subnets = ["10.0.101.0/24"]
-  
-  # Subnet for RDS
-  database_subnets     = ["10.0.201.0/24", "10.0.202.0/24"]
   create_database_subnet_group           = true
   create_database_nat_gateway_route      = false 
   create_database_internet_gateway_route = false
-    
-  enable_nat_gateway = false
+
+  tags = merge(
+  local.tags,
+  {
+    Name = var.vpc_name
+  }
+  )
+}
+
+# Modify subnet names
+resource "aws_ec2_tag" "public_subnets_name" {
+  count = length(module.vpc.public_subnets)
+
+  resource_id = module.vpc.public_subnets[count.index]
+  key         = "Name"
+  value       = "${var.vpc_name}-public-${count.index + 1}"
+}
+
+resource "aws_ec2_tag" "private_subnets_name" {
+  count = length(module.vpc.private_subnets)
+
+  resource_id = module.vpc.private_subnets[count.index]
+  key         = "Name"
+  value       = "${var.vpc_name}-private-${count.index + 1}"
+}
+
+resource "aws_ec2_tag" "database" {
+  count = length(module.vpc.database_subnets)
+
+  resource_id = module.vpc.database_subnets[count.index]
+  key         = "Name"
+  value       = "${var.vpc_name}-database-${count.index + 1}"
 }

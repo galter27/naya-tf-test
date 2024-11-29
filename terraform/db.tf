@@ -20,6 +20,8 @@ module "rds_postgres" {
   db_subnet_group_name   = module.vpc.database_subnet_group
   vpc_security_group_ids = [module.database_sg.security_group_id]
 
+  skip_final_snapshot = true
+
   tags = local.tags
 
   # Database Deletion Protection

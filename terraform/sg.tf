@@ -31,7 +31,6 @@ module "bastion_sg" {
     }
   ]
 
-  tags = local.tags
 }
 
 module "private_sg" {
@@ -60,8 +59,6 @@ module "private_sg" {
       cidr_blocks = "10.0.0.0/16" # Allow outbound traffic only within the VPC
     }
   ]
-
-  tags = local.tags
 }
 
 module "database_sg" {
@@ -82,5 +79,4 @@ module "database_sg" {
     }
   ]
 
-  tags = local.tags
 }

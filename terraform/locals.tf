@@ -20,9 +20,4 @@ locals {
     cidrsubnet(local.vpc_cidr, 8, i + 200)
   ]
 
-  tags = {
-    CreatedBy  = var.owner
-    Terraform  = true
-    GithubRepo = "https://github.com/galter27/naya-tf-test"
-  }
 }

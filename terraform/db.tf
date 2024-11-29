@@ -22,8 +22,6 @@ module "rds_postgres" {
 
   skip_final_snapshot = true
 
-  tags = local.tags
-
   # Database Deletion Protection
   deletion_protection = false
 }

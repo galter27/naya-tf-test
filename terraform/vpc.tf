@@ -22,6 +22,4 @@ module "vpc" {
     Name = "${var.vpc_name}-internet-gateway"
   }
 
-  tags = local.tags
-
 }

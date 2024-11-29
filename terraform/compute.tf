@@ -16,7 +16,6 @@ module "bastion_ec2" {
   vpc_security_group_ids      = [module.bastion_sg.security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
 
-  tags = local.tags
 }
 
 
@@ -32,7 +31,6 @@ module "postgres_client_ec2" {
   vpc_security_group_ids = [module.private_sg.security_group_id]
   subnet_id              = module.vpc.private_subnets[0]
 
-  tags = local.tags
 }
 
 module "lambda_function" {
@@ -63,5 +61,4 @@ module "lambda_function" {
 
   attach_network_policy = true
 
-  tags = local.tags
 }

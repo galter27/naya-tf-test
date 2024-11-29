@@ -3,17 +3,17 @@ module "rds_postgres" {
 
   identifier = "naya-rds"
 
-  engine                   = "postgres"
-  engine_version           = "14"
-  family                   = "postgres14" 
-  major_engine_version     = "14"         
-  instance_class    = "db.t4g.micro"
-  allocated_storage = 10  
+  engine               = "postgres"
+  engine_version       = "14"
+  family               = "postgres14"
+  major_engine_version = "14"
+  instance_class       = "db.t4g.micro"
+  allocated_storage    = 10
 
-  db_name  = "postgres"
-  username = "postgres"
-  password = "password"  
-  port     = "5432"  
+  db_name                     = "postgres"
+  username                    = "postgres"
+  password                    = "password"
+  port                        = "5432"
   manage_master_user_password = false
 
   multi_az               = false

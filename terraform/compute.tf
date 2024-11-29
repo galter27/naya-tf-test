@@ -1,6 +1,6 @@
 resource "aws_key_pair" "key_pair" {
   key_name   = var.key_name
-  public_key = file(var.public_key) 
+  public_key = file(var.public_key)
 }
 
 module "bastion_ec2" {
@@ -26,18 +26,18 @@ module "postgres_client_ec2" {
 
   name = var.postgres_client_name
 
-  instance_type               = "t3.micro"
-  key_name                    = aws_key_pair.key_pair.key_name
-  monitoring                  = false
-  vpc_security_group_ids      = [module.private_sg.security_group_id]
-  subnet_id                   = module.vpc.private_subnets[0]
+  instance_type          = "t3.micro"
+  key_name               = aws_key_pair.key_pair.key_name
+  monitoring             = false
+  vpc_security_group_ids = [module.private_sg.security_group_id]
+  subnet_id              = module.vpc.private_subnets[0]
 
   tags = local.tags
 }
 
 module "lambda_function" {
-  source = "terraform-aws-modules/lambda/aws"
-  version = "7.16.0"
+  source     = "terraform-aws-modules/lambda/aws"
+  version    = "7.16.0"
   depends_on = [module.rds_postgres]
 
   function_name = "rds-lambda"

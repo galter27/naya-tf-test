@@ -7,16 +7,16 @@ module "bastion_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [
-      {
-        from_port   = 22
-        to_port     = 22
-        protocol    = "tcp"
-        description = "Allow SSH access from local machine"
-        cidr_blocks = "0.0.0.0/0"
-      }
-    ]
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      description = "Allow SSH access from local machine"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
 
-      egress_with_cidr_blocks = [
+  egress_with_cidr_blocks = [
     {
       from_port   = 0
       to_port     = 65535
@@ -24,13 +24,13 @@ module "bastion_sg" {
       cidr_blocks = "0.0.0.0/0"
     },
     {
-      from_port   = -1      # ICMP type (any)
-      to_port     = -1      # ICMP code (any)
-      protocol    = "icmp"  # Specify ICMP protocol
+      from_port   = -1     # ICMP type (any)
+      to_port     = -1     # ICMP code (any)
+      protocol    = "icmp" # Specify ICMP protocol
       cidr_blocks = "0.0.0.0/0"
     }
   ]
-  
+
   tags = local.tags
 }
 
@@ -43,12 +43,12 @@ module "private_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress_with_source_security_group_id = [
-    {   
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      description = "Allow SSH access from bastion security group"
-      source_security_group_id = module.bastion_sg.security_group_id 
+    {
+      from_port                = 22
+      to_port                  = 22
+      protocol                 = "tcp"
+      description              = "Allow SSH access from bastion security group"
+      source_security_group_id = module.bastion_sg.security_group_id
     }
   ]
 
@@ -74,10 +74,10 @@ module "database_sg" {
 
   ingress_with_source_security_group_id = [
     {
-      from_port   = 5432
-      to_port     = 5432
-      protocol    = "tcp"
-      description = "Allow PostgreSQL access from private EC2 instances"
+      from_port                = 5432
+      to_port                  = 5432
+      protocol                 = "tcp"
+      description              = "Allow PostgreSQL access from private EC2 instances"
       source_security_group_id = module.private_sg.security_group_id
     }
   ]

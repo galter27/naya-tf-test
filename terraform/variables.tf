@@ -4,8 +4,8 @@
 
 variable "owner" {
   description = "The owner of the project"
-  type = string
-  default = "galter"
+  type        = string
+  default     = "galter"
 }
 
 #---------------------------------------------------------------
@@ -15,7 +15,7 @@ variable "owner" {
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string
-  default     = "naya-vpc"  
+  default     = "naya-vpc"
 }
 
 variable "vpc_cidr" {
@@ -100,15 +100,15 @@ variable "database_sg_name" {
 
 variable "key_name" {
   description = "Name of the key pair."
-  type = string
-  default = "naya_key"
-  
+  type        = string
+  default     = "naya_key"
+
 }
 
 variable "public_key" {
   description = "Name of the public key."
-  type = string
-  default = "naya_key_rsa.pub"
+  type        = string
+  default     = "naya_key_rsa.pub"
 }
 
 variable "bastion_name" {

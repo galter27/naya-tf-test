@@ -7,37 +7,31 @@ module "bastion_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress_with_cidr_blocks = [
+      {
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        description = "Allow SSH access from local machine"
+        cidr_blocks = "0.0.0.0/0"
+      }
+    ]
+
+      egress_with_cidr_blocks = [
     {
-      from_port   = 22
-      to_port     = 22
+      from_port   = 0
+      to_port     = 65535
       protocol    = "tcp"
-      description = "Allow SSH access from local machine"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = -1      # ICMP type (any)
+      to_port     = -1      # ICMP code (any)
+      protocol    = "icmp"  # Specify ICMP protocol
       cidr_blocks = "0.0.0.0/0"
     }
   ]
-
-    egress_with_cidr_blocks = [
-  {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = "0.0.0.0/0"
-  },
-  {
-    from_port   = -1      # ICMP type (any)
-    to_port     = -1      # ICMP code (any)
-    protocol    = "icmp"  # Specify ICMP protocol
-    cidr_blocks = "0.0.0.0/0"
-  }
-]
   
-  tags = merge(
-  local.tags,
-  {
-    Name = var.bastion_sg_name
-  }
-  )
-
+  tags = local.tags
 }
 
 module "private_sg" {
@@ -67,12 +61,7 @@ module "private_sg" {
     }
   ]
 
-  tags = merge(
-  local.tags,
-  {
-    Name = var.private_sg_name
-  }
-  )
+  tags = local.tags
 }
 
 module "database_sg" {
@@ -93,10 +82,5 @@ module "database_sg" {
     }
   ]
 
-  tags = merge(
-  local.tags,
-  {
-    Name = var.database_sg_name
-  }
-  )
+  tags = local.tags
 }

@@ -17,49 +17,11 @@ module "vpc" {
   create_database_nat_gateway_route      = false 
   create_database_internet_gateway_route = false
 
-  # Set the route table names using tags
-  private_route_table_tags = {
-    Name = "${var.vpc_name}-private-route"
+  # IGW tags
+  igw_tags = {
+    Name = "${var.vpc_name}-internet-gateway"
   }
 
-  public_route_table_tags = {
-    Name = "${var.vpc_name}-public-route"
-  }
+  tags = local.tags
 
-  database_route_table_tags = {
-    Name = "${var.vpc_name}-database-route"
-  }
-
-
-  tags = merge(
-  local.tags,
-  {
-    Name = var.vpc_name
-  }
-  )
-}
-
-# Modify subnet names
-resource "aws_ec2_tag" "public_subnets_name" {
-  count = length(module.vpc.public_subnets)
-
-  resource_id = module.vpc.public_subnets[count.index]
-  key         = "Name"
-  value       = "${var.vpc_name}-public-${count.index + 1}"
-}
-
-resource "aws_ec2_tag" "private_subnets_name" {
-  count = length(module.vpc.private_subnets)
-
-  resource_id = module.vpc.private_subnets[count.index]
-  key         = "Name"
-  value       = "${var.vpc_name}-private-${count.index + 1}"
-}
-
-resource "aws_ec2_tag" "database" {
-  count = length(module.vpc.database_subnets)
-
-  resource_id = module.vpc.database_subnets[count.index]
-  key         = "Name"
-  value       = "${var.vpc_name}-database-${count.index + 1}"
 }
